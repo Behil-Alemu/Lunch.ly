@@ -45,6 +45,18 @@ router.post("/add/", async function(req, res, next) {
     return next(err);
   }
 });
+router.post("/:search/", async function(req, res, next) {
+  try {
+    const searchTerm = req.params.search;
+    const customers = await Customer.search(searchTerm);
+
+    return res.render("customer_search.html",{ customers});
+  } catch (err) {
+    return next(err);
+  }
+});
+
+
 
 /** Show a customer, given their ID. */
 

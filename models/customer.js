@@ -16,6 +16,16 @@ class Customer {
 
   /** find all customers. */
 
+  /** methods for getting/setting notes (keep as empty string, not NULL) */
+
+  set notes(val) {
+    this._notes = val || "";
+  }
+
+  get notes() {
+    return this._notes;
+  }
+
   static async all() {
     const results = await db.query(
       `SELECT id, 
@@ -25,6 +35,20 @@ class Customer {
          notes
        FROM customers
        ORDER BY last_name, first_name`
+    );
+    return results.rows.map(c => new Customer(c));
+  }
+
+  static async search(searchTerm) {
+    const results = await db.query(
+      `SELECT id, 
+         first_name AS "firstName",  
+         last_name AS "lastName", 
+         phone, 
+         notes
+       FROM customers
+       WHERE first_name LIKE $1 OR last_name LIKE $1
+       ORDER BY last_name, first_name`,[searchTerm]
     );
     return results.rows.map(c => new Customer(c));
   }
@@ -58,7 +82,7 @@ class Customer {
   async getReservations() {
     return await Reservation.getReservationsForCustomer(this.id);
   }
-  async fullName() {
+  get fullName() {
     const name = [this.firstName,this.lastName ];
     return name.join(" ")
   }
