@@ -58,6 +58,10 @@ class Customer {
   async getReservations() {
     return await Reservation.getReservationsForCustomer(this.id);
   }
+  async fullName() {
+    const name = [this.firstName,this.lastName ];
+    return name.join(" ")
+  }
 
   /** save this customer. */
 
